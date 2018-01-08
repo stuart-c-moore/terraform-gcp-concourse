@@ -10,6 +10,7 @@ resource "null_resource" "bosh-bastion" {
     destination = "${var.home}/"
     connection {
       user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }
   }
