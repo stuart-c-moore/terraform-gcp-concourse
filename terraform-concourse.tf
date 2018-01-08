@@ -14,4 +14,13 @@ resource "null_resource" "bosh-bastion" {
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }
   }
+  provisioner "file" {
+    content = "${data.template_file.concourse-properties.rendered}"
+    destination = "${var.home}/concourse.properties"
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
+    }
+  }
 }
