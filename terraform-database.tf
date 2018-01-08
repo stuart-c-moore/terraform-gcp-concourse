@@ -14,5 +14,5 @@ resource "google_sql_user" "concourse" {
   name = "concourse"
   instance = "${module.terraform-gcp-bosh.db-instance-name}"
   host = "%"
-  password = "${random_string,concourse-password.result}"
+  password = "${random_string.concourse-password.result}"
 }
