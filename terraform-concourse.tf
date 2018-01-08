@@ -4,7 +4,7 @@ resource "google_compute_subnetwork" "concourse" {
   network = "${module.terraform-gcp-bosh.bosh-network-link}"
 }
 
-resourse "null_resource" "bosh-bastion" {
+resource "null_resource" "bosh-bastion" {
   provisioner "file" {
     source = "${path.module}/files/bosh-bastion/"
     destination = "${var.home}/"
