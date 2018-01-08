@@ -6,7 +6,7 @@ variable "db-ha" { default =  false }
 variable "service_account_name" { default = "automated" }
 variable "service_account_role" { default = "roles/owner" }
 variable "db-version" { default = "MYSQL_5_7" }
-variable "concourse-cidr" { default = "10.20.0.0/28"
+variable "concourse-cidr" { default = "10.20.0.0/28" }
 variable "database_params" {
   type = "map"
   default {
