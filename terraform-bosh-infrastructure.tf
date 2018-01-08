@@ -7,4 +7,5 @@ module "terraform-gcp-bosh" {
   db-ha = "${var.db-ha}"
   service_account_name = "${var.service_account_name}"
   service_account_role = "${var.service_account_role}"
+  db-version = "${var.db-version}"
 }
