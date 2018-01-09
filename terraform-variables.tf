@@ -9,6 +9,8 @@ variable "ssh-privatekey" { default = "" }
 variable "db-version" { default = "MYSQL_5_7" }
 variable "home" { default = "/home/vagrant" }
 variable "concourse-cidr" { default = "10.20.0.0/28" }
+variable "concourse-web-port" { default = "8080" }
+variable "network" { default = "default" }
 variable "database_params" {
   type = "map"
   default {
