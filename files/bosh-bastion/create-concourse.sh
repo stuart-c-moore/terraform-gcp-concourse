@@ -10,3 +10,5 @@ else
     git pull
     cd ..
 fi
+
+cd concourse-deployment/cluster

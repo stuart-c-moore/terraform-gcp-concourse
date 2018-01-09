@@ -1,3 +1,4 @@
+/*
 data "template_file" "concourse-properties" {
   template = <<EOF
 #!/usr/bin/env bash
@@ -9,3 +10,4 @@ EOF
     concourse-password = "${random_string.concourse-password.result}"
   }
 }
+*/
