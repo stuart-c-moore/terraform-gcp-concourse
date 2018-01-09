@@ -1,3 +1,7 @@
+/*
+
+Current focus is to get it up and running, before worrying about an external DB
+
 resource "google_sql_database" "concourse_db" {
   name = "concourse_db"
   instance = "${module.terraform-gcp-bosh.db-instance-name}"
@@ -16,3 +20,5 @@ resource "google_sql_user" "concourse" {
   host = "%"
   password = "${random_string.concourse-password.result}"
 }
+
+*/
