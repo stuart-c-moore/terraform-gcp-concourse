@@ -52,6 +52,10 @@ resource "google_compute_instance_group" "concourse-web-z1" {
   }
 }
 
+/*
+
+A bit pointless if the DB is a single-instance ...
+
 resource "google_compute_instance_group" "concourse-web-z2" {
   name = "${var.prefix}-concourse-web-z2"
   zone = "${lookup(var.region_params["${var.region}"],"zone2")}"
@@ -70,6 +74,8 @@ resource "google_compute_instance_group" "concourse-web-z3" {
   }
 }
 
+*/
+
 resource "google_compute_backend_service" "concourse-web" {
   name        = "concourse-web"
   port_name   = "http"
@@ -78,8 +84,8 @@ resource "google_compute_backend_service" "concourse-web" {
   health_checks = ["${google_compute_http_health_check.concourse-web.self_link}"]
   backend = [
     { group = "${google_compute_instance_group.concourse-web-z1.self_link}" },
-    { group = "${google_compute_instance_group.concourse-web-z2.self_link}" },
-    { group = "${google_compute_instance_group.concourse-web-z3.self_link}" },
+#    { group = "${google_compute_instance_group.concourse-web-z2.self_link}" },
+#    { group = "${google_compute_instance_group.concourse-web-z3.self_link}" },
   ],
 }
 
