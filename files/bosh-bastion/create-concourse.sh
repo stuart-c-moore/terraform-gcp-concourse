@@ -17,8 +17,11 @@ bosh deploy -d concourse concourse.yml \
   -l ../versions.yml \
   --vars-store ../../concourse-creds.yml \
   -o operations/no-auth.yml \
-  --var external_url=http://concourse.migs.wtf:8080 \
-  --var network_name=default \
+  -o operations/scale.yml \
+  --var web_instances=2 \
+  --var worker_instances=2 \
+  --var external_url=http://concourse.migs.wtf \
+  --var network_name=concourse \
   --var web_vm_type=default \
   --var db_vm_type=default \
   --var worker_vm_type=default \
@@ -27,4 +30,4 @@ bosh deploy -d concourse concourse.yml \
 
 cd ../..
 
-fly -t ci login -c http://10.10.0.2:8080
+fly -t ci login -c http://concourse.migs.wtf
