@@ -57,7 +57,7 @@ resource "google_compute_target_http_proxy" "concourse-web" {
 resource "google_compute_forwarding_rule" "concourse-web" {
   name        = "${var.prefix}-concourse-web"
   target      = "${google_compute_target_pool.concourse-web.self_link}"
-  port_range  = "${var.concourse-web-port"
+  port_range  = "${var.concourse-web-port}"
   ip_protocol = "TCP"
   ip_address  = "${google_compute_address.concourse-web.address}"
 }
