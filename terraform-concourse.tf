@@ -73,7 +73,7 @@ resource "google_compute_instance_group" "concourse-web-z3" {
 resource "google_compute_http_health_check" "concourse-web" {
   name         = "${var.prefix}-concourse-web"
   request_path = "/"
-  port         = "${var.concourse-web-port}"
+  port         = "80"
 }
 
 resource "google_compute_target_http_proxy" "concourse-web" {
