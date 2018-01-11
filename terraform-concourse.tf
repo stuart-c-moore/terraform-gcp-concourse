@@ -4,29 +4,6 @@ resource "google_compute_subnetwork" "concourse" {
   network = "${module.terraform-gcp-bosh.bosh-network-link}"
 }
 
-resource "null_resource" "bosh-bastion" {
-  provisioner "file" {
-    content = "${data.template_file.concourse-create.rendered}"
-    destination = "${var.home}/create-concourse.sh"
-    connection {
-      user = "vagrant"
-      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
-      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
-    }
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x ${var.home}/create-concourse.sh"
-    ]
-    connection {
-      user = "vagrant"
-      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
-      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
-    }
-
-  }
-}
-
 resource "google_compute_global_address" "concourse-web" {
   name = "${var.prefix}-concourse-web"
 }

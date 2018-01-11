@@ -1,17 +1,3 @@
-/*
-data "template_file" "concourse-properties" {
-  template = <<EOF
-#!/usr/bin/env bash
-export BOSH_DB_CONCOURSE_USER=$${concourse-user}
-export BOSH_DB_CONCOURSE_PORT=$${concourse-password}
-EOF
-  vars {
-    concourse-user = "${google_sql_user.concourse.name}"
-    concourse-password = "${random_string.concourse-password.result}"
-  }
-}
-*/
-
 data "template_file" "concourse-create" {
   template = <<EOF
 #!/usr/bin/env bash
@@ -51,3 +37,47 @@ EOF
     concourse-url = "${var.concourse-url}"
   }
 }
+
+data "template_file" "concourse-web-lb" {
+  template = <<EOF
+- type: replace
+  path: /instance_groups/name=web/vm_extensions?
+  value:
+  - $${prefix}-concourse-web-lb
+EOF
+  vars {
+    prefix = "${var.prefix}"
+  }
+}
+
+resource "null_resource" "bosh-bastion" {
+  provisioner "file" {
+    content = "${data.template_file.concourse-create.rendered}"
+    destination = "${var.home}/create-concourse.sh"
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+    }   
+  }
+  provisioner "remote-exec" {
+    inline = [ 
+      "chmod +x ${var.home}/create-concourse.sh"
+    ]   
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+    }   
+  }
+  provisioner "file" {
+    content = "${data.template_file.concourse-web-lb.rendered}"
+    destination = "${var.home}/concourse-support/google-loadbalancer.yml"
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+    }   
+  }
+}
+
