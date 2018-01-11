@@ -17,6 +17,7 @@ bosh deploy -d concourse concourse.yml \
   --vars-store ../../concourse-creds.yml \
   -o operations/no-auth.yml \
   -o operations/scale.yml \
+  -o ../../concourse-support/google-loadbalancer.yml \
   --var web_instances=$${concourse-web-instances} \
   --var worker_instances=$${concourse-worker-instances} \
   --var external_url=$${concourse-url} \
@@ -80,4 +81,3 @@ resource "null_resource" "bosh-bastion" {
     }   
   }
 }
-
