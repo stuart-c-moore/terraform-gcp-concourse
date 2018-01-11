@@ -54,7 +54,7 @@ resource "google_compute_instance_group" "concourse-web-z3" {
 */
 
 resource "google_compute_backend_service" "concourse-web" {
-  name        = "concourse-web"
+  name        = "${var.prefix}-concourse-web"
   port_name   = "http"
   protocol    = "HTTP"
   timeout_sec = 10
