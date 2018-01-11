@@ -5,7 +5,7 @@ resource "google_compute_subnetwork" "concourse" {
 }
 
 resource "null_resource" "bosh-bastion" {
-  depends_on = "${module.terraform-gcp-bosh.bosh-bastion-private-ip}"
+  depends_on = ["${module.terraform-gcp-bosh.bosh-bastion-private-ip}"]
   provisioner "file" {
     source = "${path.module}/files/bosh-bastion/"
     destination = "${var.home}/"
