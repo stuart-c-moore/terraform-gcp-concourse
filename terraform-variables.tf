@@ -10,6 +10,11 @@ variable "db-version" { default = "MYSQL_5_7" }
 variable "home" { default = "/home/vagrant" }
 variable "concourse-cidr" { default = "10.20.0.0/28" }
 variable "concourse-web-port" { default = "8080" }
+variable "concourse-web-instances" { default = "1" }
+variable "concourse-worker-instances" { default = "1" }
+variable "concourse-web-machine_type" { default = "default" }
+variable "concourse-worker-machine_type" { default = "default" }
+variable "concourse-url" { }
 variable "network" { default = "default" }
 variable "database_params" {
   type = "map"
