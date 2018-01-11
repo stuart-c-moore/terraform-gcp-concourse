@@ -9,3 +9,7 @@ output "bosh-bastion-public-ip" {
 output "nat-gateway-ips" {
   value = ["${module.terraform-gcp-bosh.nat-gateway-ips}"]
 }
+
+output "concourse-web-ip" {
+  value = "${google_compute_global_address.concourse-web.address}"
+}

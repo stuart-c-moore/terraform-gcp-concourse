@@ -59,7 +59,7 @@ resource "null_resource" "bosh-bastion" {
     connection {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
-      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }   
   }
   provisioner "remote-exec" {
@@ -69,7 +69,7 @@ resource "null_resource" "bosh-bastion" {
     connection {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
-      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }   
   }
   provisioner "file" {
@@ -78,7 +78,7 @@ resource "null_resource" "bosh-bastion" {
     connection {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
-      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var. ssh-privatekey}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }   
   }
 }
