@@ -51,7 +51,6 @@ EOF
   }
 }
 
-/*
 resource "null_resource" "bosh-bastion" {
   provisioner "file" {
     content = "${data.template_file.concourse-create.rendered}"
@@ -82,4 +81,3 @@ resource "null_resource" "bosh-bastion" {
     }   
   }
 }
-*/
