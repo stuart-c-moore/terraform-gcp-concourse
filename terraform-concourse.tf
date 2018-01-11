@@ -34,7 +34,7 @@ resource "null_resource" "bosh-bastion" {
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
     }
   }
-  provisioner "local-exec" {
+  provisioner "remote-exec" {
     inline = [
       "chmod +x ${var.home}/create-concourse.sh"
     ]
