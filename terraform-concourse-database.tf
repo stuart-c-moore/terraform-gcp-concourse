@@ -3,7 +3,6 @@ module "concourse-db" {
   project = "${var.project}"
   region = "${var.region}"
   ha = "${var.db-ha}"
-  db-instance-name = "bosh"
   db-version = "${var.concourse-db-version}"
   authorized_networks = "${module.terraform-gcp-natgateway.nat-gateway-ips["0"]}"
 }
