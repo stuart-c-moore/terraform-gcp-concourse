@@ -41,7 +41,7 @@ EOF
     concourse-web-machine_type = "${var.concourse-web-machine_type}"
     concourse-worker-machine_type = "${var.concourse-worker-machine_type}"
     concourse-url = "${var.concourse-url}"
-    concourse-host = "${module.concourse-db.db-instance-ip}"
+    postgres-host = "${module.concourse-db.db-instance-ip}"
     postgres-port = "${lookup(var.database_params["port"], var.concourse-db-version)}"
     postgres-role = "${google_sql_user.concourse.name}"
     postgres-password = "${random_string.concourse-password.result}"
