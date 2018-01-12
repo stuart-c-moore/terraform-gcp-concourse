@@ -17,10 +17,15 @@ bosh deploy -d concourse concourse.yml \
   --vars-store ../../concourse-creds.yml \
   -o operations/no-auth.yml \
   -o operations/scale.yml \
+  -o operations/external-postgres.yml \
   -o ../../concourse-support/google-loadbalancer.yml \
   --var web_instances=$${concourse-web-instances} \
   --var worker_instances=$${concourse-worker-instances} \
   --var external_url=$${concourse-url} \
+  --var postgres_host=$${postgres-host} \
+  --var postgres_port=$${postgres-port} \
+  --var postgres_role=$${postgres-role} \
+  --var postgres_password=$${postgres-password} \
   --var network_name=concourse \
   --var web_vm_type=$${concourse-web-machine_type} \
   --var db_vm_type=default \
@@ -36,6 +41,10 @@ EOF
     concourse-web-machine_type = "${var.concourse-web-machine_type}"
     concourse-worker-machine_type = "${var.concourse-worker-machine_type}"
     concourse-url = "${var.concourse-url}"
+    concourse-host = "${module.concourse-db.db-instance-ip}"
+    postgres-port = "${lookup(var.database_params["port"], var.concourse-db-version)}"
+    postgres-role = "${google_sql_user.concourse.name}"
+    postgres-password = "${random_string.concourse-password.result}"
   }
 }
 
