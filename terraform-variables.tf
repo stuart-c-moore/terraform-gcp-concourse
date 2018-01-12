@@ -8,6 +8,7 @@ variable "service_account_role" { default = "roles/owner" }
 variable "ssh-privatekey" { default = "" }
 variable "db-version" { default = "MYSQL_5_7" }
 variable "home" { default = "/home/vagrant" }
+variable "concourse-db-version" { default = "POSTGRES_9_6" }
 variable "concourse-cidr" { default = "10.20.0.0/28" }
 variable "concourse-web-port" { default = "8080" }
 variable "concourse-web-instances" { default = "1" }
