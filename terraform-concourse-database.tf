@@ -4,7 +4,7 @@ module "concourse-db" {
   region = "${var.region}"
   ha = "${var.db-ha}"
   db-version = "${var.concourse-db-version}"
-  authorized_networks = "${module.terraform-gcp-natgateway.nat-gateway-ips["0"]}"
+  authorized_networks = "${module.terraform-gcp-bosh.nat-gateway-ips["0"]}"
 }
 
 resource "random_string" "concourse-password" {
