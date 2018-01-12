@@ -13,8 +13,8 @@ resource "random_string" "concourse-password" {
 }
 
 resource "google_sql_user" "concourse" {
-  name = "bosh"
+  name = "concourse"
   instance = "${module.concourse-db.db-instance-name}"
-  host = "%" 
+  host = "" # https://github.com/terraform-providers/terraform-provider-google/issues/623
   password = "${random_string.concourse-password.result}"
 }
