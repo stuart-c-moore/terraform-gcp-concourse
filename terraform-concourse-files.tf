@@ -2,6 +2,8 @@ data "template_file" "concourse-create" {
   template = <<EOF
 #!/usr/bin/env bash
 
+eval $(./login.sh)
+
 if [[ ! -d concourse-deployment ]]; then
     git clone https://github.com/concourse/concourse-deployment.git
 else
