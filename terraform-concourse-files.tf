@@ -74,8 +74,8 @@ resource "null_resource" "bosh-bastion" {
   }
   provisioner "remote-exec" {
     inline = [ 
-      "chmod +x ${var.home}/create-concourse.sh"
-      "mkdir ${var.home}/concourse-support"
+      "chmod +x ${var.home}/create-concourse.sh",
+      "mkdir ${var.home}/concourse-support",
     ]   
     connection {
       user = "vagrant"
