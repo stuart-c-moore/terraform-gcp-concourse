@@ -35,6 +35,7 @@ bosh deploy -d concourse concourse.yml \
   --var db_persistent_disk_type=10GB \
   --var deployment_name=concourse
 
+sleep 5 # This is a guess
 fly -t ci login -c $${concourse-url}
 EOF
   vars {
