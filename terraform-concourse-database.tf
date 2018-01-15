@@ -18,3 +18,10 @@ resource "google_sql_user" "concourse" {
   host = "" # https://github.com/terraform-providers/terraform-provider-google/issues/623
   password = "${random_string.concourse-password.result}"
 }
+
+resource "google_sql_database" "concourse_atc_db" {
+  name = "atc"
+  instance = "${module.concourse-db.db-instance-name}"
+  charset = "${lookup(var.database_params["charset"],var.concourse-db-version)}"
+  collation = "${lookup(var.database_params["collation"],var.concourse-db-version)}"
+}
