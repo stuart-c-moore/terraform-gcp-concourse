@@ -52,24 +52,24 @@ bosh deploy -d concourse concourse.yml \
   -o operations/scale.yml \
   -o operations/external-postgres.yml \
   -o ../../concourse-support/google-loadbalancer.yml \
-  --var atc_basic_auth.username=\\${CONCOURSE_AUTH_MAIN_USER} \
-  --var atc_basic_auth.password=\\${CONCOURSE_AUTH_MAIN_PASS} \
-  --var web_instances=$\\{CONCOURSE_WEB_INSTANCES} \
-  --var worker_instances=\\${CONCOURSE_WORKER_INSTANCES} \
-  --var external_url=\\${CONCOURSE_URL} \
-  --var postgres_host=\\${POSTGRES_HOST} \
-  --var postgres_port=\\${POSTGRES_PORT} \
-  --var postgres_role=\\${POSTGRES_USER} \
-  --var postgres_password=\\${POSTGRES_PASS} \
+  --var atc_basic_auth.username=$CONCOURSE_AUTH_MAIN_USER \
+  --var atc_basic_auth.password=$CONCOURSE_AUTH_MAIN_PASS \
+  --var web_instances=$CONCOURSE_WEB_INSTANCES \
+  --var worker_instances=$CONCOURSE_WORKER_INSTANCES \
+  --var external_url=$CONCOURSE_URL \
+  --var postgres_host=$POSTGRES_HOST \
+  --var postgres_port=$POSTGRES_PORT \
+  --var postgres_role=$POSTGRES_USER \
+  --var postgres_password=$POSTGRES_PASS \
   --var network_name=concourse \
-  --var web_vm_type=\\${CONCOURSE_WEB_MACHINE} \
+  --var web_vm_type=$CONCOURSE_WEB_MACHINE \
   --var db_vm_type=default \
-  --var worker_vm_type=\\${CONCOURSE_WORKER_MACHINE} \
+  --var worker_vm_type=$CONCOURSE_WORKER_MACHINE \
   --var db_persistent_disk_type=10GB \
   --var deployment_name=concourse
 
 sleep 5 # This is a guess
-fly -t ci login -c \\${CONCOURSE_URL}
+fly -t ci login -c ${CONCOURSE_URL}
 EOF
 }
 
