@@ -29,8 +29,6 @@ resource "google_compute_instance_group" "concourse-web-z1" {
   }
 }
 
-/*
-
 resource "google_compute_instance_group" "concourse-web-z2" {
   name = "${var.prefix}-concourse-web-z2"
   zone = "${lookup(var.region_params["${var.region}"],"zone2")}"
