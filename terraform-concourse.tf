@@ -83,3 +83,8 @@ resource "google_compute_url_map" "concourse-web" {
   name = "${var.prefix}-concourse-web"
   default_service = "${google_compute_backend_service.concourse-web.self_link}"
 }
+
+resource "random_string" "concourse-auth-main-password" {
+  length = 16
+  special = false
+}

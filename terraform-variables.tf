@@ -17,6 +17,7 @@ variable "concourse-worker-instances" { default = "1" }
 variable "concourse-web-machine_type" { default = "default" }
 variable "concourse-worker-machine_type" { default = "default" }
 variable "concourse-url" { }
+variable "concourse-auth-main-username" { default = "cpo" }
 variable "network" { default = "default" }
 variable "database_params" {
   type = "map"
