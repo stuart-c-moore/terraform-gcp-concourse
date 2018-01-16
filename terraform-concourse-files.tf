@@ -26,6 +26,7 @@ EOF
     postgres-username = "${google_sql_user.concourse.name}"
     postgres-password = "${random_string.concourse-password.result}"
   }
+}
 
 data "template_file" "concourse-create" {
   template = <<EOF
