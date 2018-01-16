@@ -1,3 +1,32 @@
+data "template_file" "concourse-properties" {
+  template = <<EOF
+#!/usr/bin/env bash
+export CONCOURSE_AUTH_MAIN_USER=$${concourse-auth-main-user}
+export CONCOURSE_AUTH_MAIN_PASS=$${concourse-auth-main-pass}
+export CONCOURSE_WEB_INSTANCES=$${concourse-web-instances}
+export CONCOURSE_WEB_MACHINE=$${concourse-web-machine_type}
+export CONCOURSE_WORKER_INSTANCES=$${concourse-worker-instances}
+export CONCOURSE_WORKER_MACHINE=$${concourse-worker-machine_type}
+export CONCOURSE_URL=$${concourse-url}
+export POSTGRES_HOST=$${postgres-host}
+export POSTGRES_PORT=$${postgres-port}
+export POSTGRES_USER=$${postgres-username}
+export POSTGRES_PASS=$${postgres-password}
+EOF
+  vars {
+    concourse-auth-main-user = "${var.concourse-auth-main-username}"
+    concourse-auth-main-pass = "${random_string.concourse-auth-main-password.result}"
+    concourse-web-instances = "${var.concourse-web-instances}"
+    concourse-worker-instances = "${var.concourse-worker-instances}"
+    concourse-web-machine_type = "${var.concourse-web-machine_type}"
+    concourse-worker-machine_type = "${var.concourse-worker-machine_type}"
+    concourse-url = "${var.concourse-url}"
+    postgres-host = "${module.concourse-db.db-instance-ip}"
+    postgres-port = "${lookup(var.database_params["port"], var.concourse-db-version)}"
+    postgres-username = "${google_sql_user.concourse.name}"
+    postgres-password = "${random_string.concourse-password.result}"
+  }
+
 data "template_file" "concourse-create" {
   template = <<EOF
 #!/usr/bin/env bash
@@ -17,38 +46,29 @@ cd concourse-deployment/cluster
 bosh deploy -d concourse concourse.yml \
   -l ../versions.yml \
   --vars-store ../../concourse-creds.yml \
-  -o operations/no-auth.yml \
+  -o operations/basic-auth.yml \
   -o operations/scale.yml \
   -o operations/external-postgres.yml \
   -o ../../concourse-support/google-loadbalancer.yml \
-  --var web_instances=$${concourse-web-instances} \
-  --var worker_instances=$${concourse-worker-instances} \
-  --var external_url=$${concourse-url} \
-  --var postgres_host=$${postgres-host} \
-  --var postgres_port=$${postgres-port} \
-  --var postgres_role=$${postgres-role} \
-  --var postgres_password=$${postgres-password} \
+  --var atc_basic_auth.username=${CONCOURSE_AUTH_MAIN_USER} \
+  --var atc_basic_auth.password=${CONCOURSE_AUTH_MAIN_PASS} \
+  --var web_instances=${CONCOURSE_WEB_INSTANCES} \
+  --var worker_instances=${CONCOURSE_WORKER_INSTANCES} \
+  --var external_url=${CONCOURSE_URL} \
+  --var postgres_host=${POSTGRES_HOST} \
+  --var postgres_port=${POSTGRES_PORT} \
+  --var postgres_role=${POSTGRES_USER} \
+  --var postgres_password=${POSTGRES_PASS} \
   --var network_name=concourse \
-  --var web_vm_type=$${concourse-web-machine_type} \
+  --var web_vm_type=${CONCOURSE_WEB_MACHINE} \
   --var db_vm_type=default \
-  --var worker_vm_type=$${concourse-worker-machine_type} \
+  --var worker_vm_type=${CONCOURSE_WORKER_MACHINE} \
   --var db_persistent_disk_type=10GB \
   --var deployment_name=concourse
 
 sleep 5 # This is a guess
 fly -t ci login -c $${concourse-url}
 EOF
-  vars {
-    concourse-web-instances = "${var.concourse-web-instances}"
-    concourse-worker-instances = "${var.concourse-worker-instances}"
-    concourse-web-machine_type = "${var.concourse-web-machine_type}"
-    concourse-worker-machine_type = "${var.concourse-worker-machine_type}"
-    concourse-url = "${var.concourse-url}"
-    postgres-host = "${module.concourse-db.db-instance-ip}"
-    postgres-port = "${lookup(var.database_params["port"], var.concourse-db-version)}"
-    postgres-role = "${google_sql_user.concourse.name}"
-    postgres-password = "${random_string.concourse-password.result}"
-  }
 }
 
 data "template_file" "concourse-web-lb" {
@@ -65,13 +85,22 @@ EOF
 
 resource "null_resource" "bosh-bastion" {
   provisioner "file" {
+    content = "${data.template_file.concourse-properties.rendered}"
+    destination = "${var.home}/concourse.properties"
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
+    }
+  }
+  provisioner "file" {
     content = "${data.template_file.concourse-create.rendered}"
     destination = "${var.home}/create-concourse.sh"
     connection {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
-    }   
+    }
   }
   provisioner "remote-exec" {
     inline = [ 
@@ -82,7 +111,7 @@ resource "null_resource" "bosh-bastion" {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
-    }   
+    }
   }
   provisioner "file" {
     content = "${data.template_file.concourse-web-lb.rendered}"
@@ -91,6 +120,6 @@ resource "null_resource" "bosh-bastion" {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
       private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
-    }   
+    }
   }
 }
