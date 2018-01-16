@@ -8,6 +8,5 @@ module "terraform-gcp-bosh" {
   bosh-machine_type = "${var.bosh-machine_type}"
   nat-gateway-machine_type = "${var.nat-gateway-machine_type}"
   service_account_name = "${var.service_account_name}"
-  service_account_role = "${var.service_account_role}"
   db-version = "${var.db-version}"
 }
