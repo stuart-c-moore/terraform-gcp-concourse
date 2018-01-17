@@ -7,7 +7,9 @@ module "concourse-db" {
   ha = "${var.db-ha}"
 */
   db-version = "${var.concourse-db-version}"
-  authorized_networks = "${module.terraform-gcp-bosh.nat-gateway-ips["0"]}"
+  authorized_network_0 = "${module.terraform-gcp-bosh.nat-gateway-ips["0"]}"
+  authorized_network_1 = "${module.terraform-gcp-bosh.nat-gateway-ips["1"]}"
+  authorized_network_2 = "${module.terraform-gcp-bosh.nat-gateway-ips["2"]}"
 }
 
 resource "random_string" "concourse-password" {
