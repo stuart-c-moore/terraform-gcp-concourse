@@ -36,7 +36,7 @@ eval $(./login.sh)
 source ./concourse.properties
 
 if [[ ! -f concourse-creds.yml ]]; then
-    gsutil cp gs://${project_id}-bosh-state/concourse-creds.yml .
+    gsutil cp gs://$project_id-bosh-state/concourse-creds.yml .
 fi
 
 if [[ ! -d concourse-deployment ]]; then
@@ -74,7 +74,7 @@ bosh deploy -d concourse concourse.yml \
   --var deployment_name=concourse
 
 cd ../..
-gsutil cp concourse-creds.yml  gs://${project_id}-bosh-state/concourse-creds.yml
+gsutil cp concourse-creds.yml  gs://$project_id-bosh-state/concourse-creds.yml
 
 sleep 5 # This is a guess
 fly -t ci login -c $CONCOURSE_URL
