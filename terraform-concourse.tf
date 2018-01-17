@@ -9,11 +9,23 @@ resource "google_compute_global_address" "concourse-web" {
 }
 
 resource "google_compute_firewall" "concourse-web-hc" {
+  description = "Concourse Web Health Check"
   name          = "${var.prefix}-concourse-web-hc"
   network = "${module.terraform-gcp-bosh.bosh-network-link}"
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22"]
   target_tags   = ["concourse-web"]
+  allow {
+    protocol = "tcp"
+    ports    = ["${var.concourse-web-port}"]
+  }
+}
 
+resource "google_compute_firewall" "concourse-web-iap" {
+description = "Concourse Web from Load Balancer"
+  name          = "${var.prefix}-concourse-web-iap"
+  network = "${module.terraform-gcp-bosh.bosh-network-link}"
+  source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
+  target_tags   = ["concourse-web"]
   allow {
     protocol = "tcp"
     ports    = ["${var.concourse-web-port}"]
