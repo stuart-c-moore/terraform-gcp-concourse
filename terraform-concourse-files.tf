@@ -91,13 +91,13 @@ data "template_file" "concourse-multizone" {
 ---
 - type: replace
   path: /instance_groups/name=web/azs
-  value: [az1,az2,az3]
+  value: [z1,z2,z3]
 - type: replace
   path: /instance_groups/name=db/azs
-  value: [az1,az2,az3]
+  value: [z1,z2,z3]
 - type: replace
   path: /instance_groups/name=worker/azs
-  value: [az1,az2,az3]
+  value: [z1,z2,z3]
 EOF
 }
 
