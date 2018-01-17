@@ -35,6 +35,10 @@ data "template_file" "concourse-create" {
 eval $(./login.sh)
 source ./concourse.properties
 
+if [[ ! -f concourse-creds.yml ]]; then
+    gsutil cp gs://${project_id}-bosh-state/concourse-creds.yml .
+fi
+
 if [[ ! -d concourse-deployment ]]; then
     git clone https://github.com/concourse/concourse-deployment.git
 else
@@ -68,6 +72,9 @@ bosh deploy -d concourse concourse.yml \
   --var worker_vm_type=$CONCOURSE_WORKER_MACHINE \
   --var db_persistent_disk_type=10GB \
   --var deployment_name=concourse
+
+cd ../..
+gsutil cp concourse-creds.yml  gs://${project_id}-bosh-state/concourse-creds.yml
 
 sleep 5 # This is a guess
 fly -t ci login -c $CONCOURSE_URL
