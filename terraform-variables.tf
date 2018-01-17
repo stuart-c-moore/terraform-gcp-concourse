@@ -19,6 +19,8 @@ variable "concourse-worker-machine_type" { default = "default" }
 variable "concourse-url" { }
 variable "concourse-auth-main-username" { default = "cpo" }
 variable "network" { default = "default" }
+variable "wildcard_ssl_key" { }
+variable "wildcard_ssl_pem" { }
 variable "database_params" {
   type = "map"
   default {
