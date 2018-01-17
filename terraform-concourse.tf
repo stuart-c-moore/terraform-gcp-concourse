@@ -69,14 +69,22 @@ resource "google_compute_http_health_check" "concourse-web" {
 resource "google_compute_global_forwarding_rule" "concourse-web" {
   name        = "${var.prefix}-concourse-web"
   target      = "${google_compute_target_http_proxy.concourse-web.self_link}"
-  port_range  = "80"
+  port_range  = "443"
   ip_protocol = "TCP"
   ip_address  = "${google_compute_global_address.concourse-web.address}"
 }
 
-resource "google_compute_target_http_proxy" "concourse-web" {
+resource "google_compute_target_https_proxy" "concourse-web" {
   name        = "${var.prefix}-concourse-web"
   url_map     = "${google_compute_url_map.concourse-web.self_link}"
+  ssl_certificates = ["${google_compute_ssl_certificate.wildcard-build-finkit-io.self_link}"]
+}
+
+resource "google_compute_ssl_certificate" "wildcard-build-finkit-io" {
+  name_prefix = "wildcard-build-finkit-io-"
+  description = "*.build.finkit.io"
+  private_key = "${var.wildcard_ssl_key}"
+  certificate = "${var.wildcard_ssl_pem}"
 }
 
 resource "google_compute_url_map" "concourse-web" {
