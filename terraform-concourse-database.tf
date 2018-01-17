@@ -2,7 +2,10 @@ module "concourse-db" {
   source = "github.com/migs/terraform-gcp-database"
   project = "${var.project}"
   region = "${var.region}"
+/*
+  Terraform doesnt seem to play nicely with Postgres in HA mode, as of version 1.4.0 of the google provider
   ha = "${var.db-ha}"
+*/
   db-version = "${var.concourse-db-version}"
   authorized_networks = "${module.terraform-gcp-bosh.nat-gateway-ips["0"]}"
 }
