@@ -48,10 +48,11 @@ cd concourse-deployment/cluster
 bosh deploy -d concourse concourse.yml \
   -l ../versions.yml \
   --vars-store ../../concourse-creds.yml \
+  -o ../../concourse-support/google-loadbalancer.yml \
+  -o ../../concourse-support/multi-zone.yml \
   -o operations/basic-auth.yml \
   -o operations/scale.yml \
   -o operations/external-postgres.yml \
-  -o ../../concourse-support/google-loadbalancer.yml \
   --var atc_basic_auth.username=$CONCOURSE_AUTH_MAIN_USER \
   --var atc_basic_auth.password=$CONCOURSE_AUTH_MAIN_PASS \
   --var web_instances=$CONCOURSE_WEB_INSTANCES \
@@ -85,6 +86,21 @@ EOF
   }
 }
 
+data "template_file" "concourse-multizone" {
+  template = <<EOF
+---
+- type: replace
+  path: /instance_groups/name=web/azs
+  value: [az1,az2,az3]
+- type: replace
+  path: /instance_groups/name=db/azs
+  value: [az1,az2,az3]
+- type: replace
+  path: /instance_groups/name=worker/azs
+  value: [az1,az2,az3]
+EOF
+}
+
 resource "null_resource" "bosh-bastion" {
   provisioner "file" {
     content = "${data.template_file.concourse-properties.rendered}"
@@ -109,6 +125,15 @@ resource "null_resource" "bosh-bastion" {
       "chmod +x ${var.home}/create-concourse.sh",
       "mkdir ${var.home}/concourse-support",
     ]   
+    connection {
+      user = "vagrant"
+      host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
+      private_key = "${var.ssh-privatekey == "" ? file("${var.home}/.ssh/google_compute_engine") : var.ssh-privatekey}"
+    }
+  }
+  provisioner "file" {
+    content = "${data.template_file.concourse-multizone.rendered}"
+    destination = "${var.home}/concourse-support/multi-zone.yml"
     connection {
       user = "vagrant"
       host = "${module.terraform-gcp-bosh.bosh-bastion-public-ip}"
