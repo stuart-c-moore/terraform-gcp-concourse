@@ -75,9 +75,6 @@ bosh deploy -d concourse concourse.yml \
 
 cd ../..
 gsutil cp concourse-creds.yml  gs://$project_id-bosh-state/concourse-creds.yml
-
-sleep 5 # This is a guess
-fly -t ci login -c $CONCOURSE_URL
 EOF
 }
 
